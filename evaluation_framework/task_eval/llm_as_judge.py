@@ -169,7 +169,7 @@ if __name__ == "__main__":
     parser.add_argument("--input-file", required=True, help="Prediction JSON from evaluate_qa.py")
     parser.add_argument("--out-file", required=True, help="Output JSON with judge_label, judge_reason")
     parser.add_argument("--model", type=str, default="gpt-4o-mini", help="Judge model name")
-    parser.add_argument("--backend", type=str, default="call_llm", choices=["call_test", "call_llm", "call_vllm"],
+    parser.add_argument("--backend", type=str, default="call_llm", choices=["call_test", "call_llm", "call_vllm", "call_gemini", "call_claude"],
                         help="Backend for judge API")
     parser.add_argument("--temperature", type=float, default=0.0, help="Judge sampling temperature")
     parser.add_argument("--max-tokens", type=int, default=512, dest="max_tokens", help="Max tokens for judge")

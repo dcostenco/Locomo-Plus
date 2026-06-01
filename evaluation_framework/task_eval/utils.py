@@ -146,22 +146,51 @@ def call_vllm(input_prompt: str, model: str, **kwargs) -> str:
 
 
 def call_model(
-    input_prompt: str,
+    input_data,
     model: str,
-    backend: str = "call_test",
-    **kwargs,
+    backend: str,
+    temperature: float = 0.0,
+    max_tokens: int = 1024,
+    category: str = "",
 ) -> str:
-    """
-    Dispatch by backend to call_test / call_llm / call_vllm.
-    kwargs: category (task type) for building CONV_START + task instruction + input_prompt.
-    """
+    """Route a sample or prompt to the selected backend (test, llm, vllm, gemini, prism)."""
+    prompts = [input_data]
+    
     if backend == "call_test":
-        return call_test(input_prompt, model=model, **kwargs)
-    if backend == "call_llm":
-        return call_llm(input_prompt, model=model, **kwargs)
-    if backend == "call_vllm":
-        return call_vllm(input_prompt, model=model, **kwargs)
-    raise ValueError(f"Unknown backend: {backend}. Use call_test, call_llm, or call_vllm.")
+        from task_eval.call_test import generate_responses
+        res = generate_responses(prompts, max_tokens=max_tokens)
+        return res[0]
+    elif backend == "call_gemini":
+        from task_eval.call_gemini import generate_responses
+        if isinstance(input_data, dict):
+            prompts = [input_data.get("input_prompt", "")]
+        res = generate_responses(
+            prompts,
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens
+        )
+        return res[0]
+    elif backend == "call_prism":
+        from task_eval.call_prism import generate_responses
+        # call_prism expects the full dict
+        res = generate_responses(
+            prompts,
+            model=model,
+        )
+        return res[0]
+    elif backend == "call_claude":
+        from task_eval.call_claude import generate_responses
+        if isinstance(input_data, dict):
+            prompts = [input_data.get("input_prompt", "")]
+        res = generate_responses(
+            prompts,
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        return res[0]
+    raise ValueError(f"Unknown backend: {backend}. Use call_test, call_llm, call_vllm, call_gemini, or call_claude.")
 
 
 def extract_question_from_input_prompt(input_prompt: str) -> str:

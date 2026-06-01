@@ -53,7 +53,7 @@ def _process_one_sample(sample, args):
         )
 
     prediction = call_model(
-        input_prompt,
+        sample,
         model=args.model,
         backend=args.backend,
         temperature=args.temperature,
@@ -99,8 +99,8 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, default="mock",
                         help="Model name (used in output)")
     parser.add_argument("--backend", type=str, default="call_test",
-                        choices=["call_test", "call_llm", "call_vllm"],
-                        help="Backend: call_test (same I/O as LLM, no API), call_llm, call_vllm")
+                        choices=["call_test", "call_llm", "call_vllm", "call_gemini", "call_prism", "call_claude"],
+                        help="Backend: call_test (same I/O as LLM, no API), call_llm, call_vllm, call_gemini, call_prism, call_claude")
     parser.add_argument("--temperature", type=float, default=0.3,
                         help="Sampling temperature for call_llm (default: 0.3)")
     parser.add_argument("--max-tokens", type=int, default=1024, dest="max_tokens",

@@ -26,9 +26,21 @@ Locomo-Plus extends the [LoCoMo](https://github.com/snap-research/LoCoMo) dialog
 ## Requirements
 
 - **Generation**: `openai`, `tqdm`; for ranking, `rank_bm25`, `numpy`, `sentence-transformers`.
-- **Evaluation**: Python 3; for API-backed evaluation, `OPENAI_API_KEY` (and optionally `OPENAI_BASE_URL`).
+- **Evaluation**: Python 3; for API-backed evaluation, `OPENAI_API_KEY` (and optionally `OPENAI_BASE_URL`), `GOOGLE_API_KEY` for Gemini, `ANTHROPIC_API_KEY` for Claude.
 
 All API keys and paths are configured via environment variables or local config files (no secrets in the repo).
+
+## Results — Cognitive Memory (401 samples, `gemini-2.5-flash` judge)
+
+| Configuration | Total Score | Average Score | Absolute Delta |
+| :--- | :---: | :---: | :---: |
+| Gemini-2.5-flash (Baseline) | 278.0 / 401 | **69.33%** | — |
+| Prism-MCP (Gemini-2.5-flash + Memory) | 361.0 / 401 | **90.02%** | +20.69pp |
+| Gemini-3.1-pro-preview (Baseline) | 272.0 / 401 | **67.83%** | — |
+| Prism-MCP (Gemini-3.1-pro + Memory) | 382.0 / 401 | **95.26%** | +27.43pp |
+| Gemini-3.5-flash (Baseline) | 237.0 / 401 | **59.10%** | — |
+| Prism-MCP (Gemini-3.5-flash + Memory) | 388.0 / 401 | **96.76%** | +37.66pp |
+| Claude Sonnet 4.6 (Baseline) | 290.0 / 401 | **72.32%** | — |
 
 ## Quick start
 
@@ -57,6 +69,8 @@ See [generation_pipeline/README.md](generation_pipeline/README.md) for cue dialo
 | What | How |
 |------|-----|
 | Generation API | `OPENAI_API_KEY`, optional `OPENAI_BASE_URL` |
+| Gemini API | `GOOGLE_API_KEY` or `GEMINI_API_KEY` |
+| Claude API | `ANTHROPIC_API_KEY` |
 | Filtered cues for trigger generation | `CUE_QUERY_INPUT` (default: `generation_pipeline/selected_cue_query.json`) |
 | Full cue–query JSON for ranking | `RANK_INPUT` (default: `complete_data_all_models.json` in script dir) |
 | Embedding models for ranking | `SENTENCE_TRANSFORMER_MPNET`, `SENTENCE_TRANSFORMER_BGE` (defaults: HuggingFace IDs) |
