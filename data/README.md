@@ -29,5 +29,8 @@ This directory holds data and scripts for building **unified input** (LoCoMo fiv
 - **locomo10.json**  
   Original LoCoMo conversations: multiple sessions per conversation, each with a session timestamp and list of utterances; `speaker_a` and `speaker_b` identify speakers.
 
+- **unified_cognitive_only.json**  
+  401-sample subset of the unified dataset containing only the Cognitive category. Used for the head-to-head baseline vs Prism-MCP benchmark.
+
 - **stitched_contexts.json** (optional)  
   Output of `build_conv.py`: session-level dialogue context including original sessions, inserted cue and query sessions, and metadata (e.g. cue_time, query_time, anchor utterances).

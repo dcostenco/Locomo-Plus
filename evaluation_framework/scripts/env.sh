@@ -15,6 +15,6 @@ if [ -f "$(dirname "${BASH_SOURCE[0]}")/env.local.sh" ]; then
 fi
 export OPENAI_BASE_URL="${OPENAI_BASE_URL:-}"
 export OPENAI_API_KEY="${OPENAI_API_KEY:-}"
-export GOOGLE_API_KEY=
-export ANTHROPIC_API_KEY=
-export HF_TOKEN=
+export GOOGLE_API_KEY="${GOOGLE_API_KEY:-}"
+export ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}"
+export HF_TOKEN="${HF_TOKEN:-}"
