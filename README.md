@@ -30,18 +30,59 @@ Locomo-Plus extends the [LoCoMo](https://github.com/snap-research/LoCoMo) dialog
 
 All API keys and paths are configured via environment variables or local config files (no secrets in the repo).
 
-## Results — Cognitive Memory (401 samples, `gemini-2.5-flash` judge)
+## Results — Cognitive Memory
 
-| Configuration | Total Score | Average Score | Absolute Delta | Error Reduction |
+### What this benchmark measures
+
+Each of the 401 test samples contains a **multi-day conversation** (~65,000 characters) between two people. Buried days earlier in the conversation is a specific detail — the **cue** (e.g., "I learned to say 'no' and it reduced my stress"). Later, a **trigger** appears (e.g., "I volunteered for a project and now I'm overwhelmed"). The model must respond in a way that **naturally connects back** to the earlier cue without being told to.
+
+This tests *cognitive memory* — can an AI notice that something said days ago is relevant to what's happening now? Humans do this effortlessly; LLMs often miss the connection when it's buried in tens of thousands of tokens of conversation.
+
+### How scoring works
+
+- An independent judge model (`gemini-2.5-flash`, temperature=0) reads each prediction and decides: does the response connect to the evidence? **correct = 1 point**, **wrong = 0 points**.
+- **Baseline** = the model receives the full conversation and responds directly (no help).
+- **Prism-MCP** = the same model, but with [Prism](https://github.com/dcostenco/prism-coder)'s semantic memory system — it stores conversation fragments as embeddings in a local database and retrieves the relevant memory when the trigger arrives.
+
+### Results (401 samples)
+
+| Configuration | Score | Accuracy | vs Baseline | Error Reduction |
 | :--- | :---: | :---: | :---: | :---: |
-| Gemini-2.5-flash (Baseline) | 278.0 / 401 | **69.33%** | — | — |
-| Prism-MCP (Gemini-2.5-flash + Memory) | 361.0 / 401 | **90.02%** | +20.69pp | 67.5% |
-| Gemini-3.1-pro-preview (Baseline) | 272.0 / 401 | **67.83%** | — | — |
-| Prism-MCP (Gemini-3.1-pro + Memory) | 382.0 / 401 | **95.26%** | +27.43pp | 85.3% |
-| Gemini-3.5-flash (Baseline) | 237.0 / 401 | **59.10%** | — | — |
-| Prism-MCP (Gemini-3.5-flash + Memory) | 388.0 / 401 | **96.76%** | +37.66pp | 92.1% |
-| Claude Sonnet 4.6 (Baseline) | 290.0 / 401 | **72.32%** | — | — |
-| Prism-MCP (Claude Sonnet 4.6 + Memory) | 357.0 / 401 | **89.03%** | +16.71pp | 60.4% |
+| Gemini-2.5-flash (Baseline) | 278 / 401 | **69.33%** | — | — |
+| Prism-MCP (Gemini-2.5-flash + Memory) | 361 / 401 | **90.02%** | +20.69pp | 67.5% |
+| Gemini-3.1-pro-preview (Baseline) | 272 / 401 | **67.83%** | — | — |
+| Prism-MCP (Gemini-3.1-pro + Memory) | 382 / 401 | **95.26%** | +27.43pp | 85.3% |
+| Gemini-3.5-flash (Baseline) | 237 / 401 | **59.10%** | — | — |
+| Prism-MCP (Gemini-3.5-flash + Memory) | 388 / 401 | **96.76%** | +37.66pp | 92.1% |
+| Claude Sonnet 4.6 (Baseline) | 290 / 401 | **72.32%** | — | — |
+| Prism-MCP (Claude Sonnet 4.6 + Memory) | 357 / 401 | **89.03%** | +16.71pp | 60.4% |
+
+> **How to read the columns:** *Score* is correct answers out of 401. *vs Baseline* is the percentage-point gain from adding Prism memory to that model. *Error Reduction* is how much of the baseline's failure rate was eliminated (e.g., 92.1% means Prism fixed 92 out of every 100 mistakes Gemini 3.5 Flash made alone).
+
+### What the results mean
+
+- **No model aces this without help.** The best raw model (Claude Sonnet 4.6) still misses 28% of memory cues. Cheaper models miss 30–40%.
+- **Structured memory changes the game.** Adding Prism-MCP's semantic retrieval lifts every model by 17–38 percentage points. The cheapest model + Prism (96.76%) outperforms the most expensive model alone (72.32%).
+- **Bigger models need less help, but still benefit.** Claude starts higher (72%) so Prism's absolute gain is smaller (+17pp) than for Gemini Flash (+38pp), but it still eliminates 60% of Claude's errors.
+
+<details>
+<summary>Concrete example</summary>
+
+**Evidence** (buried in a conversation from two weeks ago):
+> Caroline: After learning to say 'no', I've felt a lot less stressed overall.
+> Melanie: That's a great skill to develop; protecting your time is important.
+
+**Trigger** (in today's conversation):
+> Caroline: I ended up volunteering for that project, and now I'm totally overwhelmed.
+
+**Baseline model response** (misses the connection):
+> "That sounds tough. Maybe try breaking the project into smaller pieces?"
+
+**Prism-MCP response** (recalls the earlier conversation):
+> "Remember how you learned to say 'no' and it reduced your stress? This might be a good time to practice that again — protecting your time is important!"
+
+The baseline model gives generic advice. Prism retrieves the specific earlier conversation about boundaries and weaves it into the response.
+</details>
 
 ## Quick start
 
