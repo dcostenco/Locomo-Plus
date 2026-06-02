@@ -32,15 +32,16 @@ All API keys and paths are configured via environment variables or local config 
 
 ## Results — Cognitive Memory (401 samples, `gemini-2.5-flash` judge)
 
-| Configuration | Total Score | Average Score | Absolute Delta |
-| :--- | :---: | :---: | :---: |
-| Gemini-2.5-flash (Baseline) | 278.0 / 401 | **69.33%** | — |
-| Prism-MCP (Gemini-2.5-flash + Memory) | 361.0 / 401 | **90.02%** | +20.69pp |
-| Gemini-3.1-pro-preview (Baseline) | 272.0 / 401 | **67.83%** | — |
-| Prism-MCP (Gemini-3.1-pro + Memory) | 382.0 / 401 | **95.26%** | +27.43pp |
-| Gemini-3.5-flash (Baseline) | 237.0 / 401 | **59.10%** | — |
-| Prism-MCP (Gemini-3.5-flash + Memory) | 388.0 / 401 | **96.76%** | +37.66pp |
-| Claude Sonnet 4.6 (Baseline) | 290.0 / 401 | **72.32%** | — |
+| Configuration | Total Score | Average Score | Absolute Delta | Error Reduction |
+| :--- | :---: | :---: | :---: | :---: |
+| Gemini-2.5-flash (Baseline) | 278.0 / 401 | **69.33%** | — | — |
+| Prism-MCP (Gemini-2.5-flash + Memory) | 361.0 / 401 | **90.02%** | +20.69pp | 67.5% |
+| Gemini-3.1-pro-preview (Baseline) | 272.0 / 401 | **67.83%** | — | — |
+| Prism-MCP (Gemini-3.1-pro + Memory) | 382.0 / 401 | **95.26%** | +27.43pp | 85.3% |
+| Gemini-3.5-flash (Baseline) | 237.0 / 401 | **59.10%** | — | — |
+| Prism-MCP (Gemini-3.5-flash + Memory) | 388.0 / 401 | **96.76%** | +37.66pp | 92.1% |
+| Claude Sonnet 4.6 (Baseline) | 290.0 / 401 | **72.32%** | — | — |
+| Prism-MCP (Claude Sonnet 4.6 + Memory) | 357.0 / 401 | **89.03%** | +16.71pp | 60.4% |
 
 ## Quick start
 
